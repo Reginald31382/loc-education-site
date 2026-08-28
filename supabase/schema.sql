@@ -1,0 +1,7 @@
+create extension if not exists pgcrypto;
+create table if not exists public.articles(id uuid primary key default gen_random_uuid(),slug text unique not null,title text not null,category text not null,excerpt text not null,body text[] not null default '{}',published boolean not null default false,created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table if not exists public.article_categories(id uuid primary key default gen_random_uuid(),name text unique not null,description text,created_at timestamptz not null default now());
+alter table public.articles enable row level security; alter table public.article_categories enable row level security;
+create policy "public can read published articles" on public.articles for select to anon using (published=true);
+create policy "public can read categories" on public.article_categories for select to anon using (true);
+insert into public.article_categories(name,description) values('Starting','Choosing a starter method and understanding early loc stages.'),('Care','Washing, moisture, drying, scalp care, and buildup.'),('Maintenance','Retwisting, interlocking, roots, styling, and repairs.'),('Health','Tension, breakage, scalp concerns, and hair-loss warning signs.'),('Products','Ingredients, product selection, and buildup prevention.'),('Myths','Common loc-care claims examined with context and evidence.') on conflict(name) do nothing;
