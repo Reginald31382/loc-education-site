@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RouteTransition from "@/components/motion/RouteTransition";
+import AuthProvider from "@/components/AuthProvider";
+
 export const metadata: Metadata = {
   title: "LOCED — Loc Education",
   description:
@@ -18,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
+        <AuthProvider>
+          <Header />
 
-        <RouteTransition>{children}</RouteTransition>
+          <RouteTransition>{children}</RouteTransition>
 
-        <Footer />
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

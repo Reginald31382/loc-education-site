@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, Search, X, ShieldCheck, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 const navItems = [
   { label: "Learn", href: "/learn" },
@@ -15,10 +17,20 @@ const navItems = [
 
 export default function Header() {
   const pathname = usePathname();
+
   const [open, setOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+
+  const { data: session } = useSession();
+
+  const user = session?.user;
+
+  const isAdmin =
+    user?.email && user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   useEffect(() => {
     setOpen(false);
+    setAccountOpen(false);
   }, [pathname]);
 
   return (
@@ -73,10 +85,22 @@ export default function Header() {
                 </Link>
               );
             })}
+
+            {/* ADMIN NAV */}
+            {isAdmin && (
+              <Link
+                href="/admin/comments"
+                className="relative ml-2 inline-flex items-center gap-2 rounded-full border border-terracotta/20 bg-terracotta/10 px-4 py-2 text-sm font-semibold text-terracotta transition-all hover:bg-terracotta hover:text-white"
+              >
+                <ShieldCheck size={15} />
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* ACTIONS */}
           <div className="flex items-center gap-2">
+            {/* SEARCH */}
             <Link
               href="/learn"
               aria-label="Search the loc library"
@@ -93,6 +117,134 @@ export default function Header() {
             >
               <Search size={17} strokeWidth={1.8} />
             </Link>
+
+            {/* USER ACCOUNT */}
+            {user ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setAccountOpen((value) => !value)}
+                  aria-label="Open account menu"
+                  aria-expanded={accountOpen}
+                  className="
+                    flex h-10 w-10 items-center justify-center
+                    overflow-hidden rounded-full
+                    border border-black/10
+                    bg-white/60
+                    transition-all duration-300
+                    hover:-translate-y-0.5
+                    hover:shadow-md
+                  "
+                >
+                  {user.image ? (
+                    <Image
+                      src={user.image}
+                      alt={user.name || "User"}
+                      width={40}
+                      height={40}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-sm font-bold">
+                      {(user.name || "U").charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {accountOpen && (
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        y: -8,
+                        scale: 0.96,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                        y: -8,
+                        scale: 0.96,
+                      }}
+                      transition={{
+                        duration: 0.18,
+                      }}
+                      className="
+                        absolute right-0 top-12 z-50 w-56
+                        rounded-2xl border border-black/10
+                        bg-white p-2 shadow-xl
+                      "
+                    >
+                      {/* USER INFO */}
+                      <div className="border-b border-black/5 px-3 py-3">
+                        <p className="truncate text-sm font-semibold">
+                          {user.name || "LOCED reader"}
+                        </p>
+
+                        <p className="mt-1 truncate text-xs text-black/45">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      {/* ADMIN LINK */}
+                      {isAdmin && (
+                        <Link
+                          href="/admin/comments"
+                          className="
+                            mt-2 flex items-center gap-3
+                            rounded-xl px-3 py-2.5
+                            text-sm font-semibold text-terracotta
+                            transition-colors
+                            hover:bg-terracotta/10
+                          "
+                        >
+                          <ShieldCheck size={16} />
+                          Admin moderation
+                        </Link>
+                      )}
+
+                      {/* SIGN OUT */}
+                      <button
+                        type="button"
+                        onClick={() => signOut({ callbackUrl: "/" })}
+                        className="
+                          mt-1 flex w-full items-center gap-3
+                          rounded-xl px-3 py-2.5
+                          text-left text-sm font-semibold
+                          text-black/60
+                          transition-colors
+                          hover:bg-black/5
+                          hover:text-ink
+                        "
+                      >
+                        <LogOut size={16} />
+                        Sign out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              /* SIGN IN */
+              <Link
+                href="/login"
+                className="
+                  inline-flex h-10 items-center justify-center
+                  rounded-full border border-black/10
+                  bg-white/60 px-4
+                  text-sm font-semibold text-ink
+                  transition-all duration-300
+                  hover:-translate-y-0.5
+                  hover:bg-white
+                  hover:shadow-md
+                "
+              >
+                Sign in
+              </Link>
+            )}
 
             {/* MOBILE MENU */}
             <button
@@ -206,6 +358,41 @@ export default function Header() {
                     </Link>
                   </motion.div>
                 ))}
+
+                {/* MOBILE ADMIN LINK */}
+                {isAdmin && (
+                  <Link
+                    href="/admin/comments"
+                    onClick={() => setOpen(false)}
+                    className="
+                      mt-2 flex items-center gap-3
+                      rounded-xl px-4 py-3
+                      text-base font-semibold
+                      text-terracotta
+                      transition-colors
+                      hover:bg-terracotta/10
+                    "
+                  >
+                    <ShieldCheck size={18} />
+                    Admin moderation
+                  </Link>
+                )}
+
+                {/* MOBILE SIGN IN */}
+                {!user && (
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="
+                      mt-2 block rounded-xl px-4 py-3
+                      text-base font-semibold text-terracotta
+                      transition-colors
+                      hover:bg-terracotta/10
+                    "
+                  >
+                    Sign in
+                  </Link>
+                )}
               </motion.div>
             </motion.nav>
           )}

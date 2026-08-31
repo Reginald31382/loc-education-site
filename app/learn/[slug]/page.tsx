@@ -1,25 +1,18 @@
-import Link from "next/link";
-import { ArrowLeft, Clock3 } from "lucide-react";
 import { notFound } from "next/navigation";
-
-import FadeIn from "@/components/motion/FadeIn";
-import Reveal from "@/components/motion/Reveal";
+import Link from "next/link";
+import { ArrowLeft, Clock, ArrowRight } from "lucide-react";
 
 import { getArticleBySlug, getArticles } from "@/lib/articles";
+import Reveal from "@/components/motion/Reveal";
+import FadeIn from "@/components/motion/FadeIn";
+import CommentSection from "@/components/CommentSection";
+import ApprovedComments from "@/components/ApprovedComments";
 
 type LessonPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  const articles = await getArticles();
-
-  return articles.map((article) => ({
-    slug: article.slug,
-  }));
-}
 
 export default async function LessonPage({ params }: LessonPageProps) {
   const { slug } = await params;
@@ -30,109 +23,101 @@ export default async function LessonPage({ params }: LessonPageProps) {
     notFound();
   }
 
+  const articles = await getArticles();
+
+  const currentIndex = articles.findIndex((item) => item.slug === article.slug);
+
+  const nextArticle = currentIndex !== -1 ? articles[currentIndex + 1] : null;
+
   return (
     <main>
-      <section className="border-b border-black/10 py-16 sm:py-24">
-        <div className="container-site">
+      {/* HERO */}
+      <section className="border-b border-black/10">
+        <div className="container-site py-14 sm:py-20">
           <FadeIn>
             <Link
               href="/learn"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-black/50 transition-colors hover:text-terracotta"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-black/55 transition-colors hover:text-ink"
             >
-              <ArrowLeft
-                size={16}
-                className="transition-transform duration-300 group-hover:-translate-x-1"
-              />
-              Back to library
+              <ArrowLeft size={16} />
+              Back to lessons
             </Link>
           </FadeIn>
 
-          <FadeIn delay={0.1}>
-            <div className="mt-10">
+          <div className="mt-10 max-w-4xl">
+            <Reveal delay={0.05}>
               <span className="pill">{article.category}</span>
+            </Reveal>
 
-              <h1 className="mt-6 max-w-4xl font-display text-5xl font-bold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
+            <Reveal delay={0.1}>
+              <h1 className="mt-6 font-display text-5xl font-bold leading-[1.02] tracking-[-0.04em] sm:text-7xl">
                 {article.title}
               </h1>
+            </Reveal>
 
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-black/55 sm:text-xl">
+            <FadeIn delay={0.2}>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-black/60">
                 {article.excerpt}
               </p>
+            </FadeIn>
 
-              <div className="mt-7 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-black/35">
-                <Clock3 size={14} />
+            <FadeIn delay={0.25}>
+              <div className="mt-7 flex items-center gap-2 text-sm text-black/45">
+                <Clock size={16} />
                 {article.readTime}
               </div>
-            </div>
-          </FadeIn>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
-      <section className="container-site py-16 sm:py-24">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,720px)_280px] lg:justify-between">
+      {/* ARTICLE */}
+      <section className="container-site py-16 sm:py-20">
+        <div className="mx-auto max-w-3xl">
           <article>
-            <div className="space-y-10">
-              {article.body.map((paragraph, index) => (
-                <Reveal key={`${article.slug}-${index}`} delay={index * 0.08}>
-                  <p className="text-lg leading-9 text-black/70 sm:text-xl">
-                    {paragraph}
-                  </p>
+            <div className="space-y-8">
+              {(article.body ?? []).map((paragraph, index) => (
+                <Reveal key={`${article.slug}-${index}`} delay={index * 0.04}>
+                  <p className="text-lg leading-9 text-black/70">{paragraph}</p>
                 </Reveal>
               ))}
             </div>
           </article>
 
-          <aside className="hidden lg:block">
-            <div className="sticky top-28 rounded-[2rem] border border-black/10 bg-white/60 p-6">
-              <span className="section-label">THIS LESSON</span>
+          {/* COMMENTS */}
+          <ApprovedComments articleSlug={article.slug} />
 
-              <h2 className="mt-4 font-display text-xl font-bold">
-                {article.title}
-              </h2>
+          <CommentSection articleSlug={article.slug} />
 
-              <div className="my-5 h-px bg-black/10" />
-
-              <div className="flex items-center gap-2 text-sm text-black/45">
-                <Clock3 size={15} />
-                {article.readTime}
-              </div>
+          {/* NEXT LESSON */}
+          {nextArticle && (
+            <section className="mt-20 border-t border-black/10 pt-12">
+              <span className="section-label">Continue learning</span>
 
               <Link
-                href="/learn"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-terracotta"
+                href={`/learn/${nextArticle.slug}`}
+                className="group mt-4 flex items-center justify-between rounded-3xl border border-black/10 bg-white/60 p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
               >
-                <ArrowLeft size={15} />
-                All lessons
+                <div>
+                  <span className="text-sm text-black/45">
+                    {nextArticle.category}
+                  </span>
+
+                  <h2 className="mt-2 font-display text-2xl font-bold">
+                    {nextArticle.title}
+                  </h2>
+
+                  <p className="mt-2 text-sm text-black/55">
+                    {nextArticle.readTime}
+                  </p>
+                </div>
+
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform duration-300 group-hover:translate-x-1">
+                  <ArrowRight size={18} />
+                </div>
               </Link>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section className="bg-ink py-16 text-white sm:py-20">
-        <div className="container-site">
-          <FadeIn>
-            <span className="pill border-white/10 bg-white/10 text-white">
-              KEEP LEARNING
-            </span>
-
-            <h2 className="mt-5 max-w-2xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              There&apos;s more to learn.
-            </h2>
-
-            <p className="mt-4 max-w-xl text-base leading-7 text-white/60">
-              Continue exploring the LOCED library to build a better
-              understanding of your locs and your maintenance routine.
-            </p>
-
-            <Link
-              href="/learn"
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-ink transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-            >
-              Browse all lessons
-              <ArrowLeft size={16} className="rotate-180" />
-            </Link>
-          </FadeIn>
+            </section>
+          )}
         </div>
       </section>
     </main>
