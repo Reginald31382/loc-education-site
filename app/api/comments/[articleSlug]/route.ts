@@ -12,10 +12,26 @@ export async function GET(request: Request, { params }: RouteContext) {
   try {
     const { articleSlug } = await params;
 
+    const { searchParams } = new URL(request.url);
+
+    const contentType = searchParams.get("contentType") || "lesson";
+
+    if (!["lesson", "product"].includes(contentType)) {
+      return NextResponse.json(
+        {
+          error: "Invalid content type.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     await connectDB();
 
     const comments = await Comment.find({
       articleSlug,
+      contentType,
       status: "approved",
     })
       .sort({ createdAt: -1 })
@@ -25,7 +41,7 @@ export async function GET(request: Request, { params }: RouteContext) {
       comments,
     });
   } catch (error) {
-    console.error("APPROVED_COMMENTS_GET_ERROR", error);
+    console.error("COMMENTS_GET_ERROR", error);
 
     return NextResponse.json(
       {

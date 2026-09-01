@@ -22,11 +22,23 @@ export async function POST(request: Request) {
 
     const articleSlug = body.articleSlug?.trim();
     const content = body.content?.trim();
+    const contentType = body.contentType || "lesson";
 
     if (!articleSlug || !content) {
       return NextResponse.json(
         {
-          error: "Article and comment content are required.",
+          error: "Content and comment text are required.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    if (!["lesson", "product"].includes(contentType)) {
+      return NextResponse.json(
+        {
+          error: "Invalid content type.",
         },
         {
           status: 400,
@@ -49,6 +61,7 @@ export async function POST(request: Request) {
 
     const comment = await Comment.create({
       articleSlug,
+      contentType,
       userId: session.user.id,
       userName: session.user.name || "LOCED reader",
       userImage: session.user.image || "",

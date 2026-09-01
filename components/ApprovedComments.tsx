@@ -13,10 +13,12 @@ type Comment = {
 
 type ApprovedCommentsProps = {
   articleSlug: string;
+  contentType?: "lesson" | "product";
 };
 
 export default function ApprovedComments({
   articleSlug,
+  contentType = "lesson",
 }: ApprovedCommentsProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,8 +26,10 @@ export default function ApprovedComments({
   useEffect(() => {
     async function loadComments() {
       try {
+        setLoading(true);
+
         const response = await fetch(
-          `/api/comments/${encodeURIComponent(articleSlug)}`,
+          `/api/comments/${articleSlug}?contentType=${contentType}`,
         );
 
         const data = await response.json();
@@ -36,53 +40,47 @@ export default function ApprovedComments({
 
         setComments(data.comments);
       } catch (error) {
-        console.error("APPROVED_COMMENTS_ERROR", error);
+        console.error("LOAD_COMMENTS_ERROR", error);
       } finally {
         setLoading(false);
       }
     }
 
     loadComments();
-  }, [articleSlug]);
+  }, [articleSlug, contentType]);
 
   if (loading) {
     return (
-      <section className="mt-16 border-t border-black/10 pt-12">
+      <section className="mt-12 border-t border-black/10 pt-12">
         <p className="text-sm text-black/45">Loading discussion...</p>
       </section>
     );
   }
 
   return (
-    <section className="mt-16 border-t border-black/10 pt-12">
-      <div className="flex items-start gap-4">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sand">
-          <MessageCircle size={20} />
+    <section className="mt-12">
+      <div className="flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sand">
+          <MessageCircle size={19} />
         </div>
 
         <div>
           <span className="section-label">Community</span>
 
-          <h2 className="mt-1 font-display text-3xl font-bold tracking-[-0.03em]">
-            Reader discussion
+          <h2 className="font-display text-3xl font-bold">
+            Community discussion
           </h2>
-
-          <p className="mt-2 max-w-xl leading-7 text-black/50">
-            Thoughts and experiences shared by the LOCED community.
-          </p>
         </div>
       </div>
 
       {comments.length === 0 ? (
-        <div className="mt-8 rounded-3xl border border-black/10 bg-white/60 p-7">
-          <p className="font-semibold">No comments yet.</p>
-
-          <p className="mt-2 text-sm leading-6 text-black/50">
-            Be the first to share your experience or perspective.
+        <div className="mt-7 rounded-3xl border border-black/10 bg-white/60 p-7">
+          <p className="text-sm leading-7 text-black/50">
+            No approved comments yet. Be the first to share your experience.
           </p>
         </div>
       ) : (
-        <div className="mt-8 space-y-5">
+        <div className="mt-7 space-y-5">
           {comments.map((comment) => (
             <article
               key={comment._id}
@@ -93,7 +91,7 @@ export default function ApprovedComments({
                   <img
                     src={comment.userImage}
                     alt={comment.userName}
-                    className="h-10 w-10 rounded-full border border-black/10 object-cover"
+                    className="h-10 w-10 rounded-full object-cover"
                   />
                 ) : (
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sand text-sm font-bold">
@@ -102,9 +100,9 @@ export default function ApprovedComments({
                 )}
 
                 <div>
-                  <h3 className="font-semibold">{comment.userName}</h3>
+                  <h3 className="text-sm font-bold">{comment.userName}</h3>
 
-                  <p className="text-xs text-black/40">
+                  <p className="mt-1 text-xs text-black/40">
                     {new Date(comment.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
