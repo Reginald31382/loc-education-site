@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ExternalLink } from "lucide-react";
+import { ArrowUpRight, ExternalLink, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const categories = [
@@ -154,14 +154,32 @@ const products = [
 
 export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === "All") {
-      return products;
-    }
+    const query = searchQuery.trim().toLowerCase();
 
-    return products.filter((product) => product.category === activeCategory);
-  }, [activeCategory]);
+    return products.filter((product) => {
+      const matchesCategory =
+        activeCategory === "All" || product.category === activeCategory;
+
+      const searchableText = [
+        product.name,
+        product.brand,
+        product.category,
+        product.description,
+        product.usedFor,
+        product.note,
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      const matchesSearch =
+        query.length === 0 || searchableText.includes(query);
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, searchQuery]);
 
   return (
     <main>
@@ -208,6 +226,52 @@ export default function ProductsPage() {
       {/* FILTERS */}
       <section className="border-y border-black/10 bg-white/40">
         <div className="container-site py-10">
+          <div className="mx-auto mb-6 max-w-xl">
+            <div className="relative">
+              <Search
+                size={18}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-black/35"
+              />
+
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search products, brands, or ingredients..."
+                className="
+        w-full rounded-full
+        border border-black/10
+        bg-white px-11 py-3.5
+        text-sm text-ink
+        outline-none
+        transition-all duration-200
+        placeholder:text-black/35
+        focus:border-terracotta/50
+        focus:ring-4 focus:ring-terracotta/10
+      "
+              />
+
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                  className="
+          absolute right-3 top-1/2
+          flex h-8 w-8 -translate-y-1/2
+          items-center justify-center
+          rounded-full
+          text-black/40
+          transition-colors
+          hover:bg-black/5
+          hover:text-ink
+        "
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+          </div>
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category) => {
               const active = activeCategory === category;
@@ -236,6 +300,7 @@ export default function ProductsPage() {
       </section>
 
       {/* PRODUCTS */}
+      {/* PRODUCTS */}
       <section className="container-site py-16 sm:py-20">
         <div className="text-center">
           <span className="section-label">Commonly used</span>
@@ -245,83 +310,127 @@ export default function ProductsPage() {
           </h2>
 
           <p className="mt-4 text-sm text-black/45">
-            Showing {filteredProducts.length}{" "}
-            {filteredProducts.length === 1 ? "product" : "products"}
+            {searchQuery ? (
+              <>
+                Showing {filteredProducts.length}{" "}
+                {filteredProducts.length === 1 ? "result" : "results"} for{" "}
+                <span className="font-semibold text-black/60">
+                  “{searchQuery}”
+                </span>
+              </>
+            ) : (
+              <>
+                Showing {filteredProducts.length}{" "}
+                {filteredProducts.length === 1 ? "product" : "products"}
+              </>
+            )}
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProducts.map((product) => (
-            <article
-              key={`${product.brand}-${product.name}`}
+        {filteredProducts.length === 0 ? (
+          <div className="mx-auto mt-12 max-w-xl rounded-3xl border border-black/10 bg-white/60 p-10 text-center">
+            <Search size={28} className="mx-auto text-black/30" />
+
+            <h3 className="mt-4 font-display text-2xl font-bold">
+              No products found
+            </h3>
+
+            <p className="mt-3 leading-7 text-black/50">
+              Try searching for something else or choose a different category.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory("All");
+              }}
               className="
-                group overflow-hidden rounded-3xl
-                border border-black/10 bg-white/60
-                text-center
-                transition-all duration-300
-                hover:-translate-y-1 hover:bg-white hover:shadow-lg
-              "
+          mt-6 rounded-full
+          border border-black/10
+          bg-white px-5 py-2.5
+          text-sm font-bold
+          transition-all
+          hover:bg-black/5
+        "
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-sand/30">
-                <Image
-                  src={product.image}
-                  alt={`${product.brand} ${product.name}`}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-
-              <div className="p-7">
-                <div className="flex justify-center">
-                  <span className="pill">{product.category}</span>
-                </div>
-
-                <p className="mt-5 text-sm font-semibold text-terracotta">
-                  {product.brand}
-                </p>
-
-                <h3 className="mt-2 font-display text-2xl font-bold tracking-[-0.03em]">
-                  {product.name}
-                </h3>
-
-                <p className="mx-auto mt-4 leading-7 text-black/60">
-                  {product.description}
-                </p>
-
-                <div className="mt-6 border-t border-black/10 pt-5">
-                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-black/35">
-                    Commonly used for
-                  </span>
-
-                  <p className="mt-2 text-sm leading-6 text-black/55">
-                    {product.usedFor}
-                  </p>
-                </div>
-
-                <p className="mt-5 text-sm leading-6 text-black/40">
-                  {product.note}
-                </p>
-
-                <a
-                  href={product.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="
-                    group/link mt-6 inline-flex items-center gap-2
-                    text-sm font-bold text-ink
-                    transition-colors hover:text-terracotta
-                  "
-                >
-                  Learn more
-                  <ExternalLink
-                    size={15}
-                    className="transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+              Clear filters
+            </button>
+          </div>
+        ) : (
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredProducts.map((product) => (
+              <article
+                key={`${product.brand}-${product.name}`}
+                className="
+            group overflow-hidden rounded-3xl
+            border border-black/10 bg-white/60
+            text-center
+            transition-all duration-300
+            hover:-translate-y-1 hover:bg-white hover:shadow-lg
+          "
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-sand/30">
+                  <Image
+                    src={product.image}
+                    alt={`${product.brand} ${product.name}`}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
+                </div>
+
+                <div className="p-7">
+                  <div className="flex justify-center">
+                    <span className="pill">{product.category}</span>
+                  </div>
+
+                  <p className="mt-5 text-sm font-semibold text-terracotta">
+                    {product.brand}
+                  </p>
+
+                  <h3 className="mt-2 font-display text-2xl font-bold tracking-[-0.03em]">
+                    {product.name}
+                  </h3>
+
+                  <p className="mx-auto mt-4 leading-7 text-black/60">
+                    {product.description}
+                  </p>
+
+                  <div className="mt-6 border-t border-black/10 pt-5">
+                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-black/35">
+                      Commonly used for
+                    </span>
+
+                    <p className="mt-2 text-sm leading-6 text-black/55">
+                      {product.usedFor}
+                    </p>
+                  </div>
+
+                  <p className="mt-5 text-sm leading-6 text-black/40">
+                    {product.note}
+                  </p>
+
+                  <a
+                    href={product.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                group/link mt-6 inline-flex items-center gap-2
+                text-sm font-bold text-ink
+                transition-colors hover:text-terracotta
+              "
+                  >
+                    Learn more
+                    <ExternalLink
+                      size={15}
+                      className="transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                    />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* DISCLAIMER */}
