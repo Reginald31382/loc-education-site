@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import CommentSection from "@/components/CommentSection";
+import ApprovedComments from "@/components/ApprovedComments";
 import { ArrowUpRight, ExternalLink, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -30,41 +32,41 @@ const products = [
     link: "https://www.drbronner.com/",
   },
   {
-    name: "Clarifying Shampoo",
-    brand: "Suave",
+    name: "Locsanity Dreadlock Detox Powder",
+    brand: "Locsanity",
     category: "Cleansers",
     image:
-      "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=900&q=80",
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788282036/Locsanity_Dreadlock_Detox_Powder.png",
     description:
-      "A cleansing product commonly used to help remove excess oils, residue, and product buildup.",
+      "The Locsanity Dreadlock Detox Powder is the deep cleansing treatment every loc wearer needs in their hair care routine — and the upgrade every Apple Cider Vinegar detox devotee has been waiting for.",
     usedFor: "Occasional deeper cleansing when buildup becomes a concern.",
-    note: "Clarifying shampoos are generally not used with the same frequency as everyday cleansers.",
-    link: "https://www.suave.com/",
+    note: "Goes beyond the surface to dissolve and extract impurities, deep-seated contaminants, excess oils, product residue, and hard water buildup that regular shampoo can't reach. Locs feel noticeably cleaner, lighter, and more refreshed after just one use.",
+    link: "https://locsanity.com/products/dreadlock-natural-hair-deep-clean-detox-and-rejuvenate-dreadlock-powder-acv-al?_pos=2&_sid=3a9deac44&_ss=r",
   },
   {
-    name: "Rosewater",
-    brand: "Various brands",
+    name: "Rosewater and Peppermint Daily Moisturizing/Refreshing Spray",
+    brand: "Locsanity",
     category: "Moisture",
     image:
-      "https://images.unsplash.com/photo-1611073615830-3b1e8c12b48c?auto=format&fit=crop&w=900&q=80",
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788280757/USA_8OZ_Rosewater-Peppermint.png",
     description:
-      "A lightweight water-based product commonly used in moisturizing and refreshing routines.",
+      "A gentle, hydrating botanical water known for helping to refresh and soften hair while supporting the appearance of a healthy-looking scalp and more manageable strands.",
     usedFor: "Refreshing the hair and scalp between wash days.",
     note: "Look for simple formulas without heavy oils or ingredients that may leave unwanted residue.",
-    link: "https://en.wikipedia.org/wiki/Rose_water",
+    link: "https://locsanity.com/collections/locs-moisturize/products/rosewater-and-peppermint-daily-moisturizing-refreshing-spray",
   },
-  {
-    name: "Aloe Vera Juice",
-    brand: "Various brands",
-    category: "Moisture",
-    image:
-      "https://images.unsplash.com/photo-1629198726164-4c43f9d417a3?auto=format&fit=crop&w=900&q=80",
-    description:
-      "A lightweight liquid sometimes incorporated into water-based moisturizing routines.",
-    usedFor: "Adding moisture to spray mixtures and refreshing routines.",
-    note: "Formulas vary significantly, so always check ingredients before applying products to the scalp.",
-    link: "https://en.wikipedia.org/wiki/Aloe_vera",
-  },
+  //   {
+  //     name: "Aloe Vera Juice",
+  //     brand: "Various brands",
+  //     category: "Moisture",
+  //     image:
+  //       "https://images.unsplash.com/photo-1629198726164-4c43f9d417a3?auto=format&fit=crop&w=900&q=80",
+  //     description:
+  //       "A lightweight liquid sometimes incorporated into water-based moisturizing routines.",
+  //     usedFor: "Adding moisture to spray mixtures and refreshing routines.",
+  //     note: "Formulas vary significantly, so always check ingredients before applying products to the scalp.",
+  //     link: "https://en.wikipedia.org/wiki/Aloe_vera",
+  //   },
   {
     name: "Jojoba Oil",
     brand: "Various brands",
@@ -88,68 +90,68 @@ const products = [
     note: "Oil should complement hydration rather than replace water-based moisture.",
     link: "https://en.wikipedia.org/wiki/Grape_seed_oil",
   },
-  {
-    name: "Jamaican Black Castor Oil",
-    brand: "Various brands",
-    category: "Scalp Care",
-    image:
-      "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=900&q=80",
-    description:
-      "A heavier oil commonly included in scalp and hair care routines.",
-    usedFor: "Scalp conditioning and targeted use in dry areas.",
-    note: "Its heavier consistency means that using too much may leave noticeable residue.",
-    link: "https://en.wikipedia.org/wiki/Castor_oil",
-  },
-  {
-    name: "Lock & Twist Gel",
-    brand: "Murray's",
-    category: "Retwisting",
-    image:
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
-    description:
-      "A styling product commonly used to provide temporary hold during loc maintenance.",
-    usedFor:
-      "Retwisting and helping maintain the appearance of newly styled roots.",
-    note: "Product choice and amount matter because some styling products can leave residue.",
-    link: "https://murrayspomade.com/",
-  },
-  {
-    name: "Tight Hold",
-    brand: "Taliah Waajid",
-    category: "Retwisting",
-    image:
-      "https://images.unsplash.com/photo-1523268755815-fe7c372a0349?auto=format&fit=crop&w=900&q=80",
-    description:
-      "A styling product commonly used during natural hair and loc maintenance.",
-    usedFor:
-      "Providing temporary hold while styling and maintaining loc roots.",
-    note: "Always evaluate the ingredient list and how the product behaves in your individual routine.",
-    link: "https://naturalhair.org/",
-  },
-  {
-    name: "Duckbill Clips",
-    brand: "Various brands",
-    category: "Tools",
-    image:
-      "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=900&q=80",
-    description:
-      "Sectioning clips commonly used during retwisting and professional maintenance.",
-    usedFor: "Holding sections of hair in place while working.",
-    note: "Choose clips that hold securely without creating unnecessary tension.",
-    link: "https://www.google.com/search?q=duckbill+clips",
-  },
-  {
-    name: "Continuous Mist Spray Bottle",
-    brand: "Various brands",
-    category: "Tools",
-    image:
-      "https://images.unsplash.com/photo-1608571423539-e951a5d3f3a6?auto=format&fit=crop&w=900&q=80",
-    description:
-      "A spray bottle designed to distribute water or lightweight liquids evenly.",
-    usedFor: "Refreshing locs and applying water-based moisturizing products.",
-    note: "Even distribution can help avoid soaking certain sections while leaving others dry.",
-    link: "https://www.google.com/search?q=continuous+mist+spray+bottle",
-  },
+  //   {
+  //     name: "Jamaican Black Castor Oil",
+  //     brand: "Various brands",
+  //     category: "Scalp Care",
+  //     image:
+  //       "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=900&q=80",
+  //     description:
+  //       "A heavier oil commonly included in scalp and hair care routines.",
+  //     usedFor: "Scalp conditioning and targeted use in dry areas.",
+  //     note: "Its heavier consistency means that using too much may leave noticeable residue.",
+  //     link: "https://en.wikipedia.org/wiki/Castor_oil",
+  //   },
+  //   {
+  //     name: "Lock & Twist Gel",
+  //     brand: "Murray's",
+  //     category: "Retwisting",
+  //     image:
+  //       "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+  //     description:
+  //       "A styling product commonly used to provide temporary hold during loc maintenance.",
+  //     usedFor:
+  //       "Retwisting and helping maintain the appearance of newly styled roots.",
+  //     note: "Product choice and amount matter because some styling products can leave residue.",
+  //     link: "https://murrayspomade.com/",
+  //   },
+  //   {
+  //     name: "Tight Hold",
+  //     brand: "Taliah Waajid",
+  //     category: "Retwisting",
+  //     image:
+  //       "https://images.unsplash.com/photo-1523268755815-fe7c372a0349?auto=format&fit=crop&w=900&q=80",
+  //     description:
+  //       "A styling product commonly used during natural hair and loc maintenance.",
+  //     usedFor:
+  //       "Providing temporary hold while styling and maintaining loc roots.",
+  //     note: "Always evaluate the ingredient list and how the product behaves in your individual routine.",
+  //     link: "https://naturalhair.org/",
+  //   },
+  //   {
+  //     name: "Duckbill Clips",
+  //     brand: "Various brands",
+  //     category: "Tools",
+  //     image:
+  //       "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=900&q=80",
+  //     description:
+  //       "Sectioning clips commonly used during retwisting and professional maintenance.",
+  //     usedFor: "Holding sections of hair in place while working.",
+  //     note: "Choose clips that hold securely without creating unnecessary tension.",
+  //     link: "https://www.google.com/search?q=duckbill+clips",
+  //   },
+  //   {
+  //     name: "Continuous Mist Spray Bottle",
+  //     brand: "Various brands",
+  //     category: "Tools",
+  //     image:
+  //       "https://images.unsplash.com/photo-1608571423539-e951a5d3f3a6?auto=format&fit=crop&w=900&q=80",
+  //     description:
+  //       "A spray bottle designed to distribute water or lightweight liquids evenly.",
+  //     usedFor: "Refreshing locs and applying water-based moisturizing products.",
+  //     note: "Even distribution can help avoid soaking certain sections while leaving others dry.",
+  //     link: "https://www.google.com/search?q=continuous+mist+spray+bottle",
+  //   },
 ];
 
 export default function ProductsPage() {
@@ -205,23 +207,6 @@ export default function ProductsPage() {
           </div>
         </div>
       </section>
-
-      {/* INTRO */}
-      {/* <section className="container-site py-16 sm:py-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="section-label">How to use this page</span>
-
-          <h2 className="mt-4 font-display text-3xl font-bold tracking-[-0.04em] sm:text-5xl">
-            Understand the product before using it.
-          </h2>
-
-          <p className="mt-6 text-lg leading-8 text-black/60">
-            LOCED focuses on explaining why certain products are commonly used,
-            what they are intended to do, and what to consider before adding
-            them to your routine.
-          </p>
-        </div>
-      </section> */}
 
       {/* FILTERS */}
       <section className="border-y border-black/10 bg-white/40">
@@ -300,14 +285,14 @@ export default function ProductsPage() {
       </section>
 
       {/* PRODUCTS */}
-      {/* PRODUCTS */}
       <section className="container-site py-16 sm:py-20">
         <div className="text-center">
-          <span className="section-label">Commonly used</span>
-
           <h2 className="mt-4 font-display text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
             {activeCategory === "All" ? "Products and tools" : activeCategory}
           </h2>
+          <span className="section-label">
+            Commonly used products we found on the net
+          </span>
 
           <p className="mt-4 text-sm text-black/45">
             {searchQuery ? (
@@ -431,6 +416,37 @@ export default function ProductsPage() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* COMMUNITY DISCUSSION */}
+      <section className="border-t border-black/10">
+        <div className="container-site py-16 sm:py-20">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="section-label">Community discussion</span>
+
+            <h2 className="mt-4 font-display text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+              What products do you use?
+            </h2>
+
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-black/55">
+              Share your experiences with products, routines, and tools used in
+              your loc care journey. Help the LOCED community learn from real
+              experiences.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-12 max-w-3xl">
+            <ApprovedComments
+              articleSlug="products-everyone-uses"
+              contentType="product"
+            />
+
+            <CommentSection
+              articleSlug="products-everyone-uses"
+              contentType="product"
+            />
+          </div>
+        </div>
       </section>
 
       {/* DISCLAIMER */}

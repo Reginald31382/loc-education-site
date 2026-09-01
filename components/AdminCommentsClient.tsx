@@ -6,6 +6,7 @@ import { Check, X, Clock, MessageCircle, Trash2 } from "lucide-react";
 type Comment = {
   _id: string;
   articleSlug: string;
+  contentType: "lesson" | "product";
   userName: string;
   userImage: string;
   content: string;
@@ -238,6 +239,18 @@ export default function AdminCommentsClient() {
                     <div className="max-w-2xl">
                       <div className="flex flex-wrap items-center gap-3">
                         <h3 className="font-semibold">{comment.userName}</h3>
+
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                            comment.contentType === "product"
+                              ? "bg-terracotta/10 text-terracotta"
+                              : "bg-black/5 text-black/50"
+                          }`}
+                        >
+                          {comment.contentType === "product"
+                            ? "Product"
+                            : "Lesson"}
+                        </span>
 
                         <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-black/50">
                           {comment.articleSlug}

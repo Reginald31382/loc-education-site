@@ -8,6 +8,13 @@ const CommentSchema = new Schema(
       index: true,
     },
 
+    contentType: {
+      type: String,
+      enum: ["lesson", "product"],
+      default: "lesson",
+      required: true,
+    },
+
     userId: {
       type: String,
       required: true,
