@@ -1,10 +1,20 @@
 import { connectDB } from "@/lib/mongodb";
-import Article from "@/models/Article";
+import ArticleModel from "@/models/Article";
 
-export async function getArticles() {
+export type Article = {
+  slug: string;
+  title: string;
+  category: string;
+  excerpt: string;
+  readTime: string;
+  body: string[];
+  featured: boolean;
+};
+
+export async function getArticles(): Promise<Article[]> {
   await connectDB();
 
-  const articles = await Article.find({
+  const articles = await ArticleModel.find({
     published: true,
   })
     .sort({ createdAt: -1 })
@@ -21,10 +31,10 @@ export async function getArticles() {
   }));
 }
 
-export async function getFeaturedArticles() {
+export async function getFeaturedArticles(): Promise<Article[]> {
   await connectDB();
 
-  const articles = await Article.find({
+  const articles = await ArticleModel.find({
     published: true,
     featured: true,
   })
@@ -42,10 +52,10 @@ export async function getFeaturedArticles() {
   }));
 }
 
-export async function getArticleBySlug(slug: string) {
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
   await connectDB();
 
-  const article = await Article.findOne({
+  const article = await ArticleModel.findOne({
     slug,
     published: true,
   }).lean();

@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock3 } from "lucide-react";
 
-import type { Article } from "@/lib/content";
-
+import type { Article } from "@/lib/articles";
 type ArticleCardProps = {
   article: Article;
 };
