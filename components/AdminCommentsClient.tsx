@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, X, Clock, MessageCircle } from "lucide-react";
+import { Check, X, Clock, MessageCircle, Trash2 } from "lucide-react";
 
 type Comment = {
   _id: string;
@@ -17,6 +17,7 @@ export default function AdminCommentsClient() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   async function loadComments() {
@@ -86,6 +87,43 @@ export default function AdminCommentsClient() {
       );
     } finally {
       setUpdatingId(null);
+    }
+  }
+
+  async function deleteComment(id: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to permanently delete this comment? This cannot be undone.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingId(id);
+      setError("");
+
+      const response = await fetch(`/api/admin/comments/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete comment.");
+      }
+
+      setComments((currentComments) =>
+        currentComments.filter((comment) => comment._id !== id),
+      );
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while deleting the comment.",
+      );
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -224,10 +262,13 @@ export default function AdminCommentsClient() {
                     </div>
 
                     {/* ACTION BUTTONS */}
-                    <div className="flex shrink-0 gap-2">
+                    <div className="flex shrink-0 flex-wrap gap-2">
                       <button
                         type="button"
-                        disabled={updatingId === comment._id}
+                        disabled={
+                          updatingId === comment._id ||
+                          deletingId === comment._id
+                        }
                         onClick={() =>
                           updateCommentStatus(comment._id, "approved")
                         }
@@ -244,7 +285,10 @@ export default function AdminCommentsClient() {
 
                       <button
                         type="button"
-                        disabled={updatingId === comment._id}
+                        disabled={
+                          updatingId === comment._id ||
+                          deletingId === comment._id
+                        }
                         onClick={() =>
                           updateCommentStatus(comment._id, "rejected")
                         }
@@ -259,6 +303,25 @@ export default function AdminCommentsClient() {
                         <X size={16} />
                         Reject
                       </button>
+
+                      <button
+                        type="button"
+                        disabled={
+                          updatingId === comment._id ||
+                          deletingId === comment._id
+                        }
+                        onClick={() => deleteComment(comment._id)}
+                        className="
+                          inline-flex items-center gap-2 rounded-full
+                          border border-red-500/20 bg-red-500/5
+                          px-4 py-2.5 text-sm font-bold text-red-700
+                          transition-all hover:bg-red-500/10
+                          disabled:cursor-not-allowed disabled:opacity-50
+                        "
+                      >
+                        <Trash2 size={16} />
+                        {deletingId === comment._id ? "Deleting..." : "Delete"}
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -266,6 +329,126 @@ export default function AdminCommentsClient() {
             </div>
           )}
         </section>
+
+        {/* APPROVED COMMENTS */}
+        {approvedComments.length > 0 && (
+          <section className="mt-16">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sand">
+                <Check size={18} />
+              </div>
+
+              <div>
+                <span className="section-label">Published</span>
+
+                <h2 className="font-display text-3xl font-bold">
+                  Approved comments
+                </h2>
+              </div>
+            </div>
+
+            <div className="mt-8 space-y-5">
+              {approvedComments.map((comment) => (
+                <article
+                  key={comment._id}
+                  className="rounded-3xl border border-black/10 bg-white/60 p-6"
+                >
+                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="max-w-2xl">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="font-semibold">{comment.userName}</h3>
+
+                        <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-black/50">
+                          {comment.articleSlug}
+                        </span>
+                      </div>
+
+                      <p className="mt-4 whitespace-pre-wrap leading-7 text-black/65">
+                        {comment.content}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={deletingId === comment._id}
+                      onClick={() => deleteComment(comment._id)}
+                      className="
+                        inline-flex shrink-0 items-center gap-2 rounded-full
+                        border border-red-500/20 bg-red-500/5
+                        px-4 py-2.5 text-sm font-bold text-red-700
+                        transition-all hover:bg-red-500/10
+                        disabled:cursor-not-allowed disabled:opacity-50
+                      "
+                    >
+                      <Trash2 size={16} />
+                      {deletingId === comment._id ? "Deleting..." : "Delete"}
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* REJECTED COMMENTS */}
+        {rejectedComments.length > 0 && (
+          <section className="mt-16">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sand">
+                <X size={18} />
+              </div>
+
+              <div>
+                <span className="section-label">Not published</span>
+
+                <h2 className="font-display text-3xl font-bold">
+                  Rejected comments
+                </h2>
+              </div>
+            </div>
+
+            <div className="mt-8 space-y-5">
+              {rejectedComments.map((comment) => (
+                <article
+                  key={comment._id}
+                  className="rounded-3xl border border-black/10 bg-white/60 p-6"
+                >
+                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="max-w-2xl">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="font-semibold">{comment.userName}</h3>
+
+                        <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-black/50">
+                          {comment.articleSlug}
+                        </span>
+                      </div>
+
+                      <p className="mt-4 whitespace-pre-wrap leading-7 text-black/65">
+                        {comment.content}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={deletingId === comment._id}
+                      onClick={() => deleteComment(comment._id)}
+                      className="
+                        inline-flex shrink-0 items-center gap-2 rounded-full
+                        border border-red-500/20 bg-red-500/5
+                        px-4 py-2.5 text-sm font-bold text-red-700
+                        transition-all hover:bg-red-500/10
+                        disabled:cursor-not-allowed disabled:opacity-50
+                      "
+                    >
+                      <Trash2 size={16} />
+                      {deletingId === comment._id ? "Deleting..." : "Delete"}
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );

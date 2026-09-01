@@ -78,7 +78,9 @@ export default async function LessonPage({ params }: LessonPageProps) {
             <div className="space-y-8">
               {(article.body ?? []).map((paragraph, index) => (
                 <Reveal key={`${article.slug}-${index}`} delay={index * 0.04}>
-                  <p className="text-lg leading-9 text-black/70">{paragraph}</p>
+                  <p className="text-lg leading-9 text-black/70 text-center">
+                    {paragraph}
+                  </p>
                 </Reveal>
               ))}
             </div>

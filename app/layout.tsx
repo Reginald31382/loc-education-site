@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RouteTransition from "@/components/motion/RouteTransition";
 import AuthProvider from "@/components/AuthProvider";
+import VisitTracker from "@/components/VisitTracker";
 
 export const metadata: Metadata = {
   title: "LOCED — Loc Education",
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
+          <VisitTracker />
           <Header />
 
           <RouteTransition>{children}</RouteTransition>

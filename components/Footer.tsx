@@ -1,3 +1,4 @@
+import VisitCounter from "@/components/VisitCounter";
 import Link from "next/link";
 
 const links = [
@@ -12,6 +13,7 @@ export default function Footer() {
     <footer className="border-t border-black/10 bg-cream py-14 sm:py-20">
       <div className="container-site">
         <div className="grid gap-12 md:grid-cols-[1.4fr_.6fr_.8fr]">
+          {/* BRAND */}
           <div>
             <Link
               href="/"
@@ -26,6 +28,7 @@ export default function Footer() {
             </p>
           </div>
 
+          {/* EXPLORE */}
           <div>
             <div className="section-label">Explore</div>
 
@@ -47,6 +50,7 @@ export default function Footer() {
             </nav>
           </div>
 
+          {/* APPROACH */}
           <div>
             <div className="section-label">Our approach</div>
 
@@ -57,8 +61,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 border-t border-black/10 pt-6 text-xs text-black/35 sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} LOCED</span>
+        {/* FOOTER BOTTOM */}
+        <div className="mt-14 flex flex-col gap-4 border-t border-black/10 pt-6 text-xs text-black/35 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <span>© {new Date().getFullYear()} LOCED</span>
+
+            <VisitCounter />
+          </div>
 
           <span>Educational content. Not medical diagnosis or treatment.</span>
         </div>
