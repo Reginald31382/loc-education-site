@@ -37,6 +37,25 @@ const CommentSchema = new Schema(
       maxlength: 2000,
     },
 
+    adminReply: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 2000,
+    },
+
+    adminReplyAt: {
+      type: Date,
+      default: null,
+    },
+
+    // Users who have liked this comment.
+    // Storing user IDs prevents duplicate likes.
+    likedBy: {
+      type: [String],
+      default: [],
+    },
+
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],

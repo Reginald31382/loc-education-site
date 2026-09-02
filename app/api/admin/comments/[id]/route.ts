@@ -26,46 +26,104 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     const { id } = await params;
     const body = await request.json();
 
-    const status = body.status;
-
-    if (!["approved", "rejected", "pending"].includes(status)) {
-      return NextResponse.json(
-        {
-          error: "Invalid comment status.",
-        },
-        {
-          status: 400,
-        },
-      );
-    }
-
     await connectDB();
 
-    const comment = await Comment.findByIdAndUpdate(
-      id,
-      {
-        status,
-      },
-      {
-        new: true,
-      },
-    );
+    // UPDATE COMMENT STATUS
+    if (body.status !== undefined) {
+      const status = body.status;
 
-    if (!comment) {
-      return NextResponse.json(
+      if (!["approved", "rejected", "pending"].includes(status)) {
+        return NextResponse.json(
+          {
+            error: "Invalid comment status.",
+          },
+          {
+            status: 400,
+          },
+        );
+      }
+
+      const comment = await Comment.findByIdAndUpdate(
+        id,
         {
-          error: "Comment not found.",
+          status,
         },
         {
-          status: 404,
+          new: true,
         },
       );
+
+      if (!comment) {
+        return NextResponse.json(
+          {
+            error: "Comment not found.",
+          },
+          {
+            status: 404,
+          },
+        );
+      }
+
+      return NextResponse.json({
+        message: "Comment updated successfully.",
+        comment,
+      });
     }
 
-    return NextResponse.json({
-      message: "Comment updated successfully.",
-      comment,
-    });
+    // ADD OR UPDATE ADMIN REPLY
+    if (body.adminReply !== undefined) {
+      const adminReply =
+        typeof body.adminReply === "string" ? body.adminReply.trim() : "";
+
+      if (adminReply.length > 2000) {
+        return NextResponse.json(
+          {
+            error: "Admin replies cannot exceed 2000 characters.",
+          },
+          {
+            status: 400,
+          },
+        );
+      }
+
+      const comment = await Comment.findByIdAndUpdate(
+        id,
+        {
+          adminReply,
+          adminReplyAt: adminReply ? new Date() : null,
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!comment) {
+        return NextResponse.json(
+          {
+            error: "Comment not found.",
+          },
+          {
+            status: 404,
+          },
+        );
+      }
+
+      return NextResponse.json({
+        message: adminReply
+          ? "Admin reply saved successfully."
+          : "Admin reply removed successfully.",
+        comment,
+      });
+    }
+
+    return NextResponse.json(
+      {
+        error: "No valid update was provided.",
+      },
+      {
+        status: 400,
+      },
+    );
   } catch (error) {
     console.error("ADMIN_COMMENT_PATCH_ERROR", error);
 

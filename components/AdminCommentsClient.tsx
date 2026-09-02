@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, X, Clock, MessageCircle, Trash2 } from "lucide-react";
+import { Check, X, Clock, MessageCircle, Send, Trash2 } from "lucide-react";
 
 type Comment = {
   _id: string;
@@ -12,6 +12,8 @@ type Comment = {
   content: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
+  adminReply?: string;
+  adminReplyAt?: string | null;
 };
 
 export default function AdminCommentsClient() {
@@ -19,6 +21,8 @@ export default function AdminCommentsClient() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [replyingId, setReplyingId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
 
   async function loadComments() {
@@ -35,6 +39,14 @@ export default function AdminCommentsClient() {
       }
 
       setComments(data.comments);
+
+      const replies: Record<string, string> = {};
+
+      data.comments.forEach((comment: Comment) => {
+        replies[comment._id] = comment.adminReply || "";
+      });
+
+      setReplyText(replies);
     } catch (error) {
       setError(
         error instanceof Error
@@ -91,6 +103,65 @@ export default function AdminCommentsClient() {
     }
   }
 
+  async function saveAdminReply(id: string, replyOverride?: string) {
+    try {
+      setReplyingId(id);
+      setError("");
+
+      const reply =
+        replyOverride !== undefined
+          ? replyOverride.trim()
+          : replyText[id]?.trim() || "";
+
+      if (reply.length > 2000) {
+        setError("Admin replies cannot exceed 2000 characters.");
+        return;
+      }
+
+      const response = await fetch(`/api/admin/comments/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          adminReply: reply,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save admin reply.");
+      }
+
+      setComments((currentComments) =>
+        currentComments.map((comment) =>
+          comment._id === id
+            ? {
+                ...comment,
+                adminReply: reply,
+                adminReplyAt: reply ? new Date().toISOString() : null,
+              }
+            : comment,
+        ),
+      );
+
+      // Clear the textarea after a successful save.
+      setReplyText((current) => ({
+        ...current,
+        [id]: "",
+      }));
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while saving the admin reply.",
+      );
+    } finally {
+      setReplyingId(null);
+    }
+  }
+
   async function deleteComment(id: string) {
     const confirmed = window.confirm(
       "Are you sure you want to permanently delete this comment? This cannot be undone.",
@@ -143,6 +214,120 @@ export default function AdminCommentsClient() {
   const rejectedComments = comments.filter(
     (comment) => comment.status === "rejected",
   );
+
+  function renderReplyBox(comment: Comment) {
+    return (
+      <div className="mt-6 rounded-2xl border border-terracotta/15 bg-terracotta/5 p-5">
+        <div className="flex items-center gap-2">
+          <MessageCircle size={17} className="text-terracotta" />
+
+          <span className="section-label">LOCED response</span>
+        </div>
+
+        <p className="mt-2 text-sm leading-6 text-black/50">
+          Respond to this reader. Your response will appear publicly beneath the
+          comment once the comment is approved.
+        </p>
+
+        {comment.adminReply && (
+          <div className="mt-4 rounded-xl border border-black/10 bg-white/70 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-black/40">
+              Current response
+            </p>
+
+            <p className="mt-2 whitespace-pre-wrap leading-7 text-black/65">
+              {comment.adminReply}
+            </p>
+
+            {comment.adminReplyAt && (
+              <p className="mt-2 text-xs text-black/35">
+                Responded{" "}
+                {new Date(comment.adminReplyAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+            )}
+          </div>
+        )}
+
+        <textarea
+          value={replyText[comment._id] || ""}
+          onChange={(event) =>
+            setReplyText((current) => ({
+              ...current,
+              [comment._id]: event.target.value,
+            }))
+          }
+          placeholder="Write a response from LOCED..."
+          maxLength={2000}
+          rows={4}
+          className="
+            mt-4 w-full resize-none rounded-2xl border border-black/10
+            bg-white px-4 py-3 text-sm leading-6 text-black outline-none
+            transition focus:border-black/25 focus:ring-2 focus:ring-black/5
+          "
+        />
+
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <span className="text-xs text-black/35">
+            {(replyText[comment._id] || "").length}/2000
+          </span>
+
+          <div className="flex flex-wrap gap-2">
+            {comment.adminReply && (
+              <button
+                type="button"
+                disabled={
+                  replyingId === comment._id || deletingId === comment._id
+                }
+                onClick={() => {
+                  setReplyText((current) => ({
+                    ...current,
+                    [comment._id]: "",
+                  }));
+
+                  saveAdminReply(comment._id, "");
+                }}
+                className="
+                  inline-flex items-center gap-2 rounded-full
+                  border border-black/10 bg-white px-4 py-2.5
+                  text-sm font-bold text-black/60 transition-all
+                  hover:bg-black/5 disabled:cursor-not-allowed
+                  disabled:opacity-50
+                "
+              >
+                Remove reply
+              </button>
+            )}
+
+            <button
+              type="button"
+              disabled={
+                replyingId === comment._id || deletingId === comment._id
+              }
+              onClick={() => saveAdminReply(comment._id)}
+              className="
+                inline-flex items-center gap-2 rounded-full
+                bg-ink px-4 py-2.5 text-sm font-bold text-white
+                transition-all hover:-translate-y-0.5 hover:shadow-md
+                disabled:cursor-not-allowed disabled:opacity-50
+              "
+            >
+              <Send size={15} />
+
+              {replyingId === comment._id
+                ? "Saving..."
+                : comment.adminReply
+                  ? "Update response"
+                  : "Save response"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -337,6 +522,8 @@ export default function AdminCommentsClient() {
                       </button>
                     </div>
                   </div>
+
+                  {renderReplyBox(comment)}
                 </article>
               ))}
             </div>
@@ -371,6 +558,18 @@ export default function AdminCommentsClient() {
                       <div className="flex flex-wrap items-center gap-3">
                         <h3 className="font-semibold">{comment.userName}</h3>
 
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                            comment.contentType === "product"
+                              ? "bg-terracotta/10 text-terracotta"
+                              : "bg-black/5 text-black/50"
+                          }`}
+                        >
+                          {comment.contentType === "product"
+                            ? "Product"
+                            : "Lesson"}
+                        </span>
+
                         <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-black/50">
                           {comment.articleSlug}
                         </span>
@@ -397,6 +596,8 @@ export default function AdminCommentsClient() {
                       {deletingId === comment._id ? "Deleting..." : "Delete"}
                     </button>
                   </div>
+
+                  {renderReplyBox(comment)}
                 </article>
               ))}
             </div>
@@ -431,6 +632,18 @@ export default function AdminCommentsClient() {
                       <div className="flex flex-wrap items-center gap-3">
                         <h3 className="font-semibold">{comment.userName}</h3>
 
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                            comment.contentType === "product"
+                              ? "bg-terracotta/10 text-terracotta"
+                              : "bg-black/5 text-black/50"
+                          }`}
+                        >
+                          {comment.contentType === "product"
+                            ? "Product"
+                            : "Lesson"}
+                        </span>
+
                         <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-black/50">
                           {comment.articleSlug}
                         </span>
@@ -457,6 +670,8 @@ export default function AdminCommentsClient() {
                       {deletingId === comment._id ? "Deleting..." : "Delete"}
                     </button>
                   </div>
+
+                  {renderReplyBox(comment)}
                 </article>
               ))}
             </div>
