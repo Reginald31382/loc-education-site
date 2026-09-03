@@ -19,17 +19,17 @@ const categories = [
 
 const products = [
   {
-    name: "Pure-Castile Liquid Soap",
-    brand: "Dr. Bronner's",
+    name: "Yasin Shampoo",
+    brand: "Dr. Locs",
     category: "Cleansers",
     image:
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80",
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788412472/yasin-shampoo-8oz.jpg",
     description:
-      "A concentrated liquid soap commonly discussed in natural hair care and cleansing routines.",
+      "Dr. Locs’ Yasin Shampoo gently cleans your locs and scalp restoring it to a balanced pH. The refreshing mint and lavender scent will leave locs feeling clean and refreshed.",
     usedFor:
-      "General cleansing when properly diluted and used according to individual hair and scalp needs.",
-    note: "Because it is concentrated, dilution and frequency of use should be considered carefully.",
-    link: "https://www.drbronner.com/",
+      "The formula has been tested to assure no build-up will sustain in locs after use.",
+    note: "Apply to wet locs and massage into a rich lather. Rinse thoroughly. Repeat as often as necessary. Normally it is recommended to wash locs at least 3 times.",
+    link: "https://drlocs.com/collections/returning-customer-favorites/products/yasin-shampoo?variant=41423176171566",
   },
   {
     name: "Locsanity Dreadlock Detox Powder",
@@ -55,29 +55,29 @@ const products = [
     note: "Look for simple formulas without heavy oils or ingredients that may leave unwanted residue.",
     link: "https://locsanity.com/collections/locs-moisturize/products/rosewater-and-peppermint-daily-moisturizing-refreshing-spray",
   },
-  //   {
-  //     name: "Aloe Vera Juice",
-  //     brand: "Various brands",
-  //     category: "Moisture",
-  //     image:
-  //       "https://images.unsplash.com/photo-1629198726164-4c43f9d417a3?auto=format&fit=crop&w=900&q=80",
-  //     description:
-  //       "A lightweight liquid sometimes incorporated into water-based moisturizing routines.",
-  //     usedFor: "Adding moisture to spray mixtures and refreshing routines.",
-  //     note: "Formulas vary significantly, so always check ingredients before applying products to the scalp.",
-  //     link: "https://en.wikipedia.org/wiki/Aloe_vera",
-  //   },
   {
-    name: "Jojoba Oil",
+    name: "Aloe Vera Juice",
     brand: "Various brands",
+    category: "Moisture",
+    image:
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788413299/black-charcoal-locs-conditioner.jpg",
+    description:
+      "Unlock the Beauty of Your Locs with Our Specialized Black Charcoal Conditioner! Crafted for Locs, this formula delivers unmatched nourishment, brilliant shine, and efficient cleansing, all while providing deep hydration to your scalp and strands. Infused with potent ingredients like black charcoal and sweet almond oil, it ensures supreme moisturization, frizz reduction, and a captivating luster for your locs Elevate your loc care routine with this transformative blend!",
+    usedFor: "Adding moisture to spray mixtures and refreshing routines.",
+    note: "Proud to be: Silicone free, Paraben free, Sulfate free, and Vegan friendly.",
+    link: "https://www.madeforlocs.com/collections/mfl-conditioner/products/locs-black-charcoal-conditioner-8-oz",
+  },
+  {
+    name: "Loc Oil",
+    brand: "Lion Locs",
     category: "Oils",
     image:
-      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80",
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788411296/lion-locs-loc-growth-oil.jpg",
     description:
-      "A lightweight oil commonly used in scalp and hair care routines.",
-    usedFor: "Supporting scalp comfort and reducing the feeling of dryness.",
-    note: "Use sparingly. Applying large amounts of oil can contribute to buildup over time.",
-    link: "https://en.wikipedia.org/wiki/Jojoba_oil",
+      "Unlock the power of nature with Lion Locs Growth Oil, a premium hair-enhancing oil blend crafted to support stronger, healthier, and more vibrant hair. Formulated to promote shine, hydration, and resilience, this lightweight oil is ideal for locs, braids, textured hair, and all hair types — from tight coils to loose waves.",
+    usedFor: "Lightweight Nourishing Dreadlock Growth Oil for Locs & Scalp",
+    note: "Comb palms and fingertips with oil through dreads to revitalize and shine. Apply in small amounts until hands glide through dreads easily. Do not overapply.",
+    link: "https://lionlocs.com/products/loc-oil",
   },
   {
     name: "Grapeseed Oil",
@@ -288,12 +288,29 @@ export default function ProductsPage() {
       <section className="container-site py-16 sm:py-20">
         <div className="text-center">
           <h2 className="mt-4 font-display text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-            {activeCategory === "All" ? "Products and tools" : activeCategory}
+            {activeCategory === "All" ? "" : activeCategory}
           </h2>
-          <span className="section-label">
-            Commonly used products we found on the net
-          </span>
 
+          {/* IMAGE DISCLOSURE */}
+          <section className="border-t border-b border-black/10 mb-8">
+            <div className="container-site py-10 sm:py-14">
+              <div className="mx-auto max-w-3xl text-center">
+                <span className="section-label">Image disclosure</span>
+
+                <p className="mt-4 text-sm leading-7 text-black/50">
+                  Product images displayed on this page are used for promotional
+                  and educational purposes. Images are sourced from the
+                  respective businesses’ websites and are intended to help
+                  visitors identify the products discussed. LOCED does not claim
+                  ownership of these images. Product names, trademarks, and
+                  images belong to their respective owners.
+                </p>
+              </div>
+            </div>
+          </section>
+          <span className="section-label">
+            Commonly used products we found on the net.
+          </span>
           <p className="mt-4 text-sm text-black/45">
             {searchQuery ? (
               <>
@@ -360,6 +377,7 @@ export default function ProductsPage() {
                     src={product.image}
                     alt={`${product.brand} ${product.name}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
