@@ -56,8 +56,8 @@ const products = [
     link: "https://locsanity.com/collections/locs-moisturize/products/rosewater-and-peppermint-daily-moisturizing-refreshing-spray",
   },
   {
-    name: "Aloe Vera Juice",
-    brand: "Various brands",
+    name: "Locs Black Charcoal Conditioner",
+    brand: "Made For Locs",
     category: "Moisture",
     image:
       "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788413299/black-charcoal-locs-conditioner.jpg",
@@ -79,42 +79,43 @@ const products = [
     note: "Comb palms and fingertips with oil through dreads to revitalize and shine. Apply in small amounts until hands glide through dreads easily. Do not overapply.",
     link: "https://lionlocs.com/products/loc-oil",
   },
+  // {
+  //   name: "Grapeseed Oil",
+  //   brand: "Various brands",
+  //   category: "Oils",
+  //   image:
+  //     "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=900&q=80",
+  //   description: "A lightweight oil frequently used in hair and scalp care.",
+  //   usedFor: "Light scalp application and moisturizing routines.",
+  //   note: "Oil should complement hydration rather than replace water-based moisture.",
+  //   link: "https://en.wikipedia.org/wiki/Grape_seed_oil",
+  // },
   {
-    name: "Grapeseed Oil",
-    brand: "Various brands",
-    category: "Oils",
+    name: "Jamaican Black Castor Oil",
+    brand: "Jamaican Mango & Lime",
+    category: "Scalp Care",
     image:
-      "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=900&q=80",
-    description: "A lightweight oil frequently used in hair and scalp care.",
-    usedFor: "Light scalp application and moisturizing routines.",
-    note: "Oil should complement hydration rather than replace water-based moisture.",
-    link: "https://en.wikipedia.org/wiki/Grape_seed_oil",
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788414773/jamaican-black-castor-oil.jpg",
+    description:
+      "A heavier oil commonly included in scalp and hair care routines.",
+    usedFor:
+      "Promotes thicker, fuller, healthier hair growth, strengthens and helps repair breakage and split ends, hydrates scalp, hair, and skin with lasting moisture.",
+    note: "Massage into scalp and edges 3–4 times weekly. Use daily on the ends of the hair. Or use monthly as a hot oil treatment. Smooth onto dry, parched skin for moisture.",
+    link: "https://jamaicanmangolime.com/products/jamaican-black-castor-oil-original",
   },
-  //   {
-  //     name: "Jamaican Black Castor Oil",
-  //     brand: "Various brands",
-  //     category: "Scalp Care",
-  //     image:
-  //       "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=900&q=80",
-  //     description:
-  //       "A heavier oil commonly included in scalp and hair care routines.",
-  //     usedFor: "Scalp conditioning and targeted use in dry areas.",
-  //     note: "Its heavier consistency means that using too much may leave noticeable residue.",
-  //     link: "https://en.wikipedia.org/wiki/Castor_oil",
-  //   },
-  //   {
-  //     name: "Lock & Twist Gel",
-  //     brand: "Murray's",
-  //     category: "Retwisting",
-  //     image:
-  //       "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
-  //     description:
-  //       "A styling product commonly used to provide temporary hold during loc maintenance.",
-  //     usedFor:
-  //       "Retwisting and helping maintain the appearance of newly styled roots.",
-  //     note: "Product choice and amount matter because some styling products can leave residue.",
-  //     link: "https://murrayspomade.com/",
-  //   },
+  {
+    name: "Jamaica Rasta Roots Gel (Tropical Flava)",
+    brand: "Made For Locs",
+    category: "Retwisting",
+    image:
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788413951/mfl-jamaica-reggae-roots-gel.jpg",
+    description:
+      "Vegan Locs Retwisting Firm Hold Gel is a scientifically-formulated hair gel that offers a great hold while leaving hair residue and buildup free. Its non-flaking formulation ensures that even in humid conditions your style will stay in place all day. This firm hold pomade is essential for those that want to define and maintain their locs! ",
+    usedFor:
+      "Retwisting and helping maintain the appearance of newly styled roots.",
+    note: "For external use only. Avoid contact with eyes. Keep out of reach of children. Ingredients may vary in color and consistency. If irritation occurs discontinue use. Consult a physician if irritation persists.",
+    link: "https://www.madeforlocs.com/products/locs-retwisting-firm-hold-gel-tropical?_pos=1&_sid=4fa393a23&_ss=r",
+  },
   //   {
   //     name: "Tight Hold",
   //     brand: "Taliah Waajid",
@@ -309,7 +310,7 @@ export default function ProductsPage() {
             </div>
           </section>
           <span className="section-label">
-            Commonly used products we found on the net.
+            Commonly used products we found on the net
           </span>
           <p className="mt-4 text-sm text-black/45">
             {searchQuery ? (
