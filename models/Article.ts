@@ -9,6 +9,11 @@ export type ArticleDocument = {
   body: string[];
   featured: boolean;
   published: boolean;
+
+  // Optional lesson hero image stored in Cloudinary.
+  heroImage?: string;
+  heroImageAlt?: string;
+
   createdAt: Date;
   updatedAt: Date;
 };
@@ -60,6 +65,18 @@ const ArticleSchema = new Schema<ArticleDocument>(
     published: {
       type: Boolean,
       default: true,
+    },
+
+    heroImage: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    heroImageAlt: {
+      type: String,
+      default: "",
+      trim: true,
     },
   },
   {

@@ -9,6 +9,8 @@ export type Article = {
   readTime: string;
   body: string[];
   featured: boolean;
+  heroImage?: string;
+  heroImageAlt?: string;
 };
 
 export async function getArticles(): Promise<Article[]> {
@@ -28,6 +30,8 @@ export async function getArticles(): Promise<Article[]> {
     readTime: article.readTime,
     body: article.body,
     featured: article.featured,
+    heroImage: article.heroImage,
+    heroImageAlt: article.heroImageAlt,
   }));
 }
 
@@ -49,6 +53,8 @@ export async function getFeaturedArticles(): Promise<Article[]> {
     readTime: article.readTime,
     body: article.body,
     featured: article.featured,
+    heroImage: article.heroImage,
+    heroImageAlt: article.heroImageAlt,
   }));
 }
 
@@ -72,5 +78,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     readTime: article.readTime,
     body: article.body,
     featured: article.featured,
+    heroImage: article.heroImage,
+    heroImageAlt: article.heroImageAlt,
   };
 }

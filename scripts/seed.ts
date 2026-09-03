@@ -23,6 +23,9 @@ const articles = [
     readTime: "6 min read",
     featured: true,
     published: true,
+    heroImage:
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788378248/starter_locs.png",
+    heroImageAlt: "Person with starter locs viewed from behind",
     body: [
       "Starter locs are the beginning of a process, not the finished product. Early hair may unravel, frizz, shrink, swell, and change shape as sections begin to intertwine.",
       "The best routine depends on the installation method, hair characteristics, scalp needs, lifestyle, and desired result. Avoid treating one maintenance schedule as universal.",

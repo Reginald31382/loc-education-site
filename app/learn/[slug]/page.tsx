@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock, ArrowRight } from "lucide-react";
@@ -71,6 +72,27 @@ export default async function LessonPage({ params }: LessonPageProps) {
         </div>
       </section>
 
+      {/* LESSON IMAGE */}
+      {article.heroImage && (
+        <section className="border-b border-black/10">
+          <FadeIn delay={0.1}>
+            <div className="container-site py-8 sm:py-10">
+              <div className="mx-auto max-w-2xl overflow-hidden rounded-2xl">
+                <Image
+                  src={article.heroImage}
+                  alt={article.heroImageAlt || `${article.title} lesson image`}
+                  width={1600}
+                  height={1067}
+                  priority
+                  className="h-auto w-full"
+                  sizes="(max-width: 768px) 90vw, 672px"
+                />
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+      )}
+
       {/* ARTICLE */}
       <section className="container-site py-16 sm:py-20">
         <div className="mx-auto max-w-3xl">
@@ -78,7 +100,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             <div className="space-y-8">
               {(article.body ?? []).map((paragraph, index) => (
                 <Reveal key={`${article.slug}-${index}`} delay={index * 0.04}>
-                  <p className="text-lg leading-9 text-black/70 text-center">
+                  <p className="text-center text-lg leading-9 text-black/70">
                     {paragraph}
                   </p>
                 </Reveal>
