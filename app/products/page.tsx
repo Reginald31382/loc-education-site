@@ -129,18 +129,19 @@ const products = [
   //     note: "Always evaluate the ingredient list and how the product behaves in your individual routine.",
   //     link: "https://naturalhair.org/",
   //   },
-  //   {
-  //     name: "Duckbill Clips",
-  //     brand: "Various brands",
-  //     category: "Tools",
-  //     image:
-  //       "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=900&q=80",
-  //     description:
-  //       "Sectioning clips commonly used during retwisting and professional maintenance.",
-  //     usedFor: "Holding sections of hair in place while working.",
-  //     note: "Choose clips that hold securely without creating unnecessary tension.",
-  //     link: "https://www.google.com/search?q=duckbill+clips",
-  //   },
+  {
+    name: "Loclicious Interlocking Loc Tool",
+    brand: "Loclicious",
+    category: "Tools",
+    image:
+      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788493777/LocTool2_2000x.jpg",
+    description:
+      "Crafted from high-quality stainless steel, this dreadlock tool is designed for both tightening existing locs and initiating new ones.",
+    usedFor:
+      "Instant interlocking tool simplifies your loc maintenance routine, making it a game-changer for your haircare journey.",
+    note: "Say goodbye to the hassle of gels, waxes, creams, clips, dryers, paperclips, or latch hooks.",
+    link: "https://loclicious.com/products/loclicious-interlocking-tool-2-3-day-shipping-us-only?variant=35217672568994",
+  },
   //   {
   //     name: "Continuous Mist Spray Bottle",
   //     brand: "Various brands",
