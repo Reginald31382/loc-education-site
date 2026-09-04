@@ -29,9 +29,41 @@ const articles = [
     body: [
       "Starter locs are the beginning of a process, not the finished product. Early hair may unravel, frizz, shrink, swell, and change shape as sections begin to intertwine.",
 
+      "The appearance of starter locs can change from one day to the next. Some sections may look loose while others begin to tighten, and this uneven development is a normal part of the early stage.",
+
+      "The installation method can affect how starter locs behave. Coils, two-strand twists, braids, interlocking, and other methods may have different maintenance needs, so the routine should match how the locs were created.",
+
+      "Hair characteristics also matter. Curl pattern, density, strand thickness, moisture levels, and shrinkage can all influence how quickly the sections begin to hold their shape.",
+
       "The best routine depends on the installation method, hair characteristics, scalp needs, lifestyle, and desired result. Avoid treating one maintenance schedule as universal.",
 
+      "Starter locs may loosen after washing, sweating, sleeping, or regular daily movement. This does not automatically mean the installation failed. Early locs often need time to settle and develop.",
+
+      "Washing is still important during the starter stage. A clean scalp supports a healthier environment for hair growth, while avoiding cleansing can allow sweat, oil, flakes, and product residue to accumulate.",
+
+      "When washing starter locs, use a gentle technique and avoid excessive rubbing, twisting, or pulling. Depending on the installation method, a loctician may recommend a particular washing method or temporary covering to help reduce unraveling.",
+
+      "Avoid applying heavy waxes, thick creams, excessive oils, or large amounts of gel to force the locs to look more mature. These products may create buildup and can interfere with the natural development of the hair.",
+
+      "Frizz is not necessarily a problem. Loose hairs and a fuzzy appearance are common while the sections begin to form. Trying to constantly smooth every strand can lead to unnecessary manipulation and tension.",
+
+      "Retwisting too frequently can place stress on the roots and may prevent the hair from developing naturally. Maintenance should be based on the condition of the scalp and locs rather than the desire to keep the style looking freshly installed at all times.",
+
       "The goal during this stage is to protect the scalp and allow the hair to develop without unnecessary manipulation or tension.",
+
+      "Avoid tight styles that pull on the starter locs, especially around the hairline and temples. Early locs may not yet have the strength or weight distribution of mature locs, so excessive tension can contribute to breakage.",
+
+      "Sleeping with a satin or silk covering can help reduce friction, lint, and unnecessary movement. Choose a covering that is comfortable and does not compress or pull on the roots.",
+
+      "Be mindful of lint from towels, blankets, sweaters, and other fabrics. Light-colored lint can become trapped in locs, and it may be more difficult to remove once the hair begins to mature.",
+
+      "Scalp comfort should be part of the maintenance routine. Persistent itching, burning, tenderness, bumps, or pain should not be treated as a normal requirement of starter locs.",
+
+      "If sections unravel more than expected or you are unsure how to maintain them, consult the loctician who installed them. They can recommend adjustments based on the installation method, hair type, and stage of development.",
+
+      "Starter locs require patience. The early stage may not look like the final result, but the changes in texture, shape, and density are part of the process.",
+
+      "Focus on consistency rather than perfection. Keep the scalp clean, limit unnecessary product, avoid excessive tension, and give the locs time to develop.",
     ],
   },
 
