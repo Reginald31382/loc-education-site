@@ -90,19 +90,19 @@ const products = [
   //   note: "Oil should complement hydration rather than replace water-based moisture.",
   //   link: "https://en.wikipedia.org/wiki/Grape_seed_oil",
   // },
-  {
-    name: "Jamaican Black Castor Oil",
-    brand: "Jamaican Mango & Lime",
-    category: "Scalp Care",
-    image:
-      "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788414773/jamaican-black-castor-oil.jpg",
-    description:
-      "A heavier oil commonly included in scalp and hair care routines.",
-    usedFor:
-      "Promotes thicker, fuller, healthier hair growth, strengthens and helps repair breakage and split ends, hydrates scalp, hair, and skin with lasting moisture.",
-    note: "Massage into scalp and edges 3–4 times weekly. Use daily on the ends of the hair. Or use monthly as a hot oil treatment. Smooth onto dry, parched skin for moisture.",
-    link: "https://jamaicanmangolime.com/products/jamaican-black-castor-oil-original",
-  },
+  // {
+  //   name: "Jamaican Black Castor Oil",
+  //   brand: "Jamaican Mango & Lime",
+  //   category: "Scalp Care",
+  //   image:
+  //     "https://res.cloudinary.com/jnpz4s1s/image/upload/v1788414773/jamaican-black-castor-oil.jpg",
+  //   description:
+  //     "A heavier oil commonly included in scalp and hair care routines.",
+  //   usedFor:
+  //     "Promotes thicker, fuller, healthier hair growth, strengthens and helps repair breakage and split ends, hydrates scalp, hair, and skin with lasting moisture.",
+  //   note: "Massage into scalp and edges 3–4 times weekly. Use daily on the ends of the hair. Or use monthly as a hot oil treatment. Smooth onto dry, parched skin for moisture.",
+  //   link: "https://jamaicanmangolime.com/products/jamaican-black-castor-oil-original",
+  // },
   {
     name: "Jamaica Rasta Roots Gel (Tropical Flava)",
     brand: "Made For Locs",
