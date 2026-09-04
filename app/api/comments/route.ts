@@ -6,28 +6,22 @@ import Comment from "@/models/Comment";
 export async function POST(request: Request) {
   try {
     const session = await auth();
-
-    if (!session?.user) {
-      return NextResponse.json(
-        {
-          error: "You must be signed in to comment.",
-        },
-        {
-          status: 401,
-        },
-      );
-    }
-
     const body = await request.json();
 
-    const articleSlug = body.articleSlug?.trim();
-    const content = body.content?.trim();
+    const articleSlug =
+      typeof body.articleSlug === "string" ? body.articleSlug.trim() : "";
+
+    const content = typeof body.content === "string" ? body.content.trim() : "";
+
+    const userName =
+      typeof body.userName === "string" ? body.userName.trim() : "";
+
     const contentType = body.contentType || "lesson";
 
-    if (!articleSlug || !content) {
+    if (!articleSlug || !content || !userName) {
       return NextResponse.json(
         {
-          error: "Content and comment text are required.",
+          error: "Name and comment text are required.",
         },
         {
           status: 400,
@@ -39,6 +33,17 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error: "Invalid content type.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    if (userName.length > 100) {
+      return NextResponse.json(
+        {
+          error: "Names cannot exceed 100 characters.",
         },
         {
           status: 400,
@@ -62,10 +67,19 @@ export async function POST(request: Request) {
     const comment = await Comment.create({
       articleSlug,
       contentType,
-      userId: session.user.id,
-      userName: session.user.name || "LOCED reader",
-      userImage: session.user.image || "",
+
+      // Anonymous comments receive an empty userId.
+      // Signed-in users still have their account ID saved.
+      userId: session?.user?.id || "",
+
+      // Anonymous users provide their own display name.
+      // Signed-in users can also submit a custom display name.
+      userName,
+
+      userImage: session?.user?.image || "",
       content,
+
+      // Every comment must be approved before appearing publicly.
       status: "pending",
     });
 

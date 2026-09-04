@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { MessageCircle, Send } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 
 type CommentSectionProps = {
   articleSlug: string;
@@ -14,8 +13,9 @@ export default function CommentSection({
   articleSlug,
   contentType = "lesson",
 }: CommentSectionProps) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
+  const [userName, setUserName] = useState("");
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -23,8 +23,21 @@ export default function CommentSection({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!content.trim()) {
+    const trimmedName = userName.trim();
+    const trimmedContent = content.trim();
+
+    if (!trimmedName) {
+      setMessage("Please enter your name.");
+      return;
+    }
+
+    if (!trimmedContent) {
       setMessage("Please write a comment before submitting.");
+      return;
+    }
+
+    if (trimmedName.length > 100) {
+      setMessage("Your name cannot exceed 100 characters.");
       return;
     }
 
@@ -39,8 +52,9 @@ export default function CommentSection({
         },
         body: JSON.stringify({
           articleSlug,
-          content,
           contentType,
+          userName: trimmedName,
+          content: trimmedContent,
         }),
       });
 
@@ -50,6 +64,7 @@ export default function CommentSection({
         throw new Error(data.error || "Failed to submit comment.");
       }
 
+      setUserName("");
       setContent("");
       setMessage(
         "Thanks for contributing! Your comment has been submitted for review.",
@@ -82,78 +97,73 @@ export default function CommentSection({
       </div>
 
       <p className="mt-5 max-w-2xl leading-7 text-black/55">
-        Share your thoughts and experiences with the LOCED community. Comments
-        are reviewed before becoming publicly visible.
+        Share your thoughts and experiences with the LOCED community. You do not
+        need an account to comment. Comments are reviewed before becoming
+        publicly visible.
       </p>
 
-      {status === "loading" ? (
-        <div className="mt-8 rounded-3xl border border-black/10 bg-white/60 p-6">
-          <p className="text-sm text-black/50">Checking your session...</p>
-        </div>
-      ) : !session?.user ? (
-        <div className="mt-8 rounded-3xl border border-black/10 bg-white/60 p-6">
-          <p className="text-sm leading-6 text-black/55">
-            Sign in to share your experience with the community.
-          </p>
+      <form onSubmit={handleSubmit} className="mt-8">
+        <input
+          type="text"
+          value={userName}
+          onChange={(event) => setUserName(event.target.value)}
+          placeholder="Your name"
+          maxLength={100}
+          required
+          className="
+            w-full rounded-2xl
+            border border-black/10 bg-white/70
+            px-5 py-4 text-sm
+            outline-none transition-all
+            placeholder:text-black/35
+            focus:border-terracotta/50
+            focus:ring-4 focus:ring-terracotta/10
+          "
+        />
 
-          <Link
-            href="/login"
+        <textarea
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+          placeholder="Share your thoughts..."
+          maxLength={2000}
+          rows={5}
+          required
+          className="
+            mt-4 w-full resize-none rounded-3xl
+            border border-black/10 bg-white/70
+            px-5 py-4 text-sm leading-7
+            outline-none transition-all
+            placeholder:text-black/35
+            focus:border-terracotta/50
+            focus:ring-4 focus:ring-terracotta/10
+          "
+        />
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+          <span className="text-xs text-black/35">
+            {content.length}/2000 characters
+          </span>
+
+          <button
+            type="submit"
+            disabled={submitting || !userName.trim() || !content.trim()}
             className="
-              mt-4 inline-flex items-center justify-center
+              inline-flex items-center gap-2
               rounded-full bg-ink px-5 py-2.5
               text-sm font-bold text-white
               transition-all duration-200
               hover:-translate-y-0.5 hover:shadow-md
+              disabled:cursor-not-allowed
+              disabled:opacity-50
+              disabled:hover:translate-y-0
             "
           >
-            Sign in to comment
-          </Link>
+            <Send size={16} />
+
+            {submitting ? "Submitting..." : "Submit comment"}
+          </button>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="mt-8">
-          <textarea
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-            placeholder="Share your thoughts..."
-            maxLength={2000}
-            rows={5}
-            className="
-              w-full resize-none rounded-3xl
-              border border-black/10 bg-white/70
-              px-5 py-4 text-sm leading-7
-              outline-none transition-all
-              placeholder:text-black/35
-              focus:border-terracotta/50
-              focus:ring-4 focus:ring-terracotta/10
-            "
-          />
-
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-            <span className="text-xs text-black/35">
-              {content.length}/2000 characters
-            </span>
-
-            <button
-              type="submit"
-              disabled={submitting || !content.trim()}
-              className="
-                inline-flex items-center gap-2
-                rounded-full bg-ink px-5 py-2.5
-                text-sm font-bold text-white
-                transition-all duration-200
-                hover:-translate-y-0.5 hover:shadow-md
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-                disabled:hover:translate-y-0
-              "
-            >
-              <Send size={16} />
-
-              {submitting ? "Submitting..." : "Submit comment"}
-            </button>
-          </div>
-        </form>
-      )}
+      </form>
 
       {message && (
         <p

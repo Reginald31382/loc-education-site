@@ -17,12 +17,14 @@ const CommentSchema = new Schema(
 
     userId: {
       type: String,
-      required: true,
+      default: "",
     },
 
     userName: {
       type: String,
       required: true,
+      trim: true,
+      maxlength: 100,
     },
 
     userImage: {
