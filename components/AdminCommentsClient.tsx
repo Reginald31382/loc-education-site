@@ -40,13 +40,13 @@ export default function AdminCommentsClient() {
 
       setComments(data.comments);
 
-      const replies: Record<string, string> = {};
+      // const replies: Record<string, string> = {};
 
-      data.comments.forEach((comment: Comment) => {
-        replies[comment._id] = comment.adminReply || "";
-      });
+      // data.comments.forEach((comment: Comment) => {
+      //   replies[comment._id] = comment.adminReply || "";
+      // });
 
-      setReplyText(replies);
+      // setReplyText(replies);
     } catch (error) {
       setError(
         error instanceof Error
